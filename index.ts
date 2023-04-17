@@ -2,15 +2,17 @@ import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { Telegraf } from "telegraf";
-import { auth } from "./src/middlewares/auth.middleware";
 import { APIError } from "./src/types/types";
 import { validator } from "./src/middlewares/validator.middleware";
 
 const app = express();
 const bot = new Telegraf(process.env.BOT_API_TOKEN!);
 const port: number = process.env.PORT as unknown as number;
+const corsOption = {
+    origin: process.env.CORS!,
+};
 
-app.use(cors());
+app.use(cors(corsOption));
 
 bot.launch();
 
@@ -20,7 +22,6 @@ app.get("/", (_req: Request, res: Response) => {
     });
 });
 
-app.use(auth);
 app.use(validator);
 
 app.get("/send", (req: Request, res: Response) => {
