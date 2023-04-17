@@ -8,8 +8,6 @@
     - [cors](https://www.npmjs.com/package/cors)
     - [dotenv](https://www.npmjs.com/package/dotenv)
     - [telegraf](https://www.npmjs.com/package/telegraf)
-    - [nodemon](https://www.npmjs.com/package/nodemon)
-    - [prettier](https://www.npmjs.com/package/prettier)
 
 ## How it was implemented
 
