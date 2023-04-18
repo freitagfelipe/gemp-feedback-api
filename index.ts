@@ -2,17 +2,24 @@ import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { Telegraf } from "telegraf";
-import { APIError } from "./src/types/types";
+import { IAPIError, APIError } from "./src/types/types";
 import { validator } from "./src/middlewares/validator.middleware";
 
 const app = express();
 const bot = new Telegraf(process.env.BOT_API_TOKEN!);
 const port: number = process.env.PORT as unknown as number;
-const corsOption = {
-    origin: process.env.CORS!,
-};
 
-app.use(cors(corsOption));
+app.use(
+    cors({
+        origin(requestOrigin, callback) {
+            if (requestOrigin === process.env.CORS!) {
+                callback(null, true);
+            } else {
+                callback(new APIError("CORS not allowed", 401));
+            }
+        },
+    })
+);
 
 bot.launch();
 
@@ -42,7 +49,7 @@ app.get("/send", (req: Request, res: Response) => {
     });
 });
 
-app.use((err: APIError, _req: Request, res: Response, _next: NextFunction) => {
+app.use((err: IAPIError, _req: Request, res: Response, _next: NextFunction) => {
     const { statusCode, message } = err;
 
     res.status(statusCode).json({ message });
