@@ -1,4 +1,4 @@
-import { APIError } from "../types/types";
+import { IAPIError } from "../types/types";
 import { NextFunction, Request, Response } from "express";
 
 export function validator(
@@ -12,19 +12,19 @@ export function validator(
         return next({
             statusCode: 400,
             message: "No type provided",
-        } as APIError);
+        } as IAPIError);
     } else if (type !== "positive" && type !== "negative") {
         return next({
             statusCode: 406,
             message: "Invalid type",
-        } as APIError);
+        } as IAPIError);
     }
 
     if (text === undefined) {
         return next({
             statusCode: 400,
             message: "No text provided",
-        } as APIError);
+        } as IAPIError);
     }
 
     next();
