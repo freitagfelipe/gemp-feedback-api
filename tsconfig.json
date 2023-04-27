@@ -13,5 +13,5 @@
         "incremental": true,
         "esModuleInterop": true
     },
-    "include": ["index.ts", "src"]
+    "include": ["src"]
 }

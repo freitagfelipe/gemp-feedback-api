@@ -1,5 +1,12 @@
-fly.toml
+build
 Dockerfile
 .dockerignore
-node_modules
+.env.example
+.eslintrc.json
+fly.toml
 .git
+.gitignore
+LICENSE
+node_modules
+.nvmrc
+README.md
