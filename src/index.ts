@@ -2,17 +2,19 @@ import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { Telegraf } from "telegraf";
-import { IAPIError, APIError } from "./src/types/types";
-import { validator } from "./src/middlewares/validator.middleware";
+import { IAPIError, APIError } from "./types/types";
+import { validator } from "./middlewares/validator.middleware";
+import { validateEnvs } from "./utils/validateEnvs";
+
+const { BOT_API_TOKEN, PORT, USER_ID, CORS } = validateEnvs("BOT_API_TOKEN", "PORT", "USER_ID", "CORS");
 
 const app = express();
-const bot = new Telegraf(process.env.BOT_API_TOKEN!);
-const port: number = process.env.PORT as unknown as number;
+const bot = new Telegraf(BOT_API_TOKEN);
 
 app.use(
     cors({
         origin(requestOrigin, callback) {
-            if (requestOrigin === process.env.CORS!) {
+            if (requestOrigin === CORS) {
                 callback(null, true);
             } else {
                 callback(new APIError("CORS not allowed", 401));
@@ -37,7 +39,7 @@ app.get("/send", (req: Request, res: Response) => {
     const emojis = type === "positive" ? "🥳🥳🥳" : "😭😭😭";
 
     bot.telegram.sendMessage(
-        process.env.USER_ID!,
+        USER_ID,
         `*Você recebeu um feedback!!!*\n\nEle é ${translatedType} ${emojis}\n\nO conteúdo do feedback é:\n${text}`,
         {
             parse_mode: "Markdown",
@@ -49,14 +51,16 @@ app.get("/send", (req: Request, res: Response) => {
     });
 });
 
-app.use((err: IAPIError, _req: Request, res: Response, _next: NextFunction) => {
+app.use((err: IAPIError, _req: Request, res: Response, next: NextFunction) => {
     const { statusCode, message } = err;
 
     res.status(statusCode).json({ message });
+
+    next();
 });
 
-app.listen(port, () => {
-    console.log(`Listening the port ${port}`);
+app.listen(PORT, () => {
+    console.log(`Listening the port ${PORT}`);
 });
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
