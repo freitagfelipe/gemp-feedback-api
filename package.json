@@ -17,7 +17,7 @@
     "scripts": {
         "start": "tsc && node ./build/index.js",
         "dev": "nodemon --ext \"ts\" --exec \"tsc && node ./build/index.js\"",
-        "prettier": "npx prettier --write \"**/*.{ts,json}\"",
+        "lint": "npx eslint src",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
